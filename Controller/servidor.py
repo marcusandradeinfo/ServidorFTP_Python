@@ -21,14 +21,13 @@ class ServerFtp():
             print(f"Erro ao obter o IP local: {e}")
             return None
 
-    def start_server(self):
+    def start_server(self,ip,porta,usuario,senha):
         try:
-            ip,porta = self.obter_ip()
             caminho_xml = os.getcwd()
 
             # Configurar a autorização de usuários
             authorizer = DummyAuthorizer()
-            authorizer.add_user("fadami", "Fadami@12", caminho_xml, perm="elradfmw")  # Permissões: 'elradfmw'
+            authorizer.add_user(usuario, senha, caminho_xml, perm="elradfmw")  # Permissões: 'elradfmw'
             authorizer.add_anonymous(caminho_xml, perm="elradfmw")  # Permitir usuários anônimos (opcional)
 
             # no escrever log
@@ -43,10 +42,10 @@ class ServerFtp():
 
             server.max_cons = 10
             server.max_cons_per_ip = 5
-
-            
-            # Iniciar o servidor
-            print(f"Servidor FTP iniciado. Acesse ftp://localhost:2121")
             server.serve_forever()
+            result_servidor = f"Servidor FTP iniciado: Ip: {ip}, Porta: {porta}, Usuário: {usuario}, Senha: {senha} "
+            return result_servidor
+            
         except Exception as e:
-            print(f"Erro ao iniciar servidor FTP: {e}")
+            result_servidor = f"Erro ao iniciar servidor FTP: {e}"
+            return result_servidor

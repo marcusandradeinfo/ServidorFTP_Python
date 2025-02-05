@@ -45,7 +45,7 @@ def Main():
             print(st.session_state.numip)
             if st.session_state.numip is not None and st.session_state.numip != "":
                 if result_porta != "" and txtuser != "" and txtsenha != "":
-                    
+                    server.start_server()
                     st.session_state.log = "Servidor Iniciado"
 
                 else:
