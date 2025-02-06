@@ -4,7 +4,7 @@ from pyftpdlib.servers import FTPServer
 import os
 import socket
 import logging
-
+import threading 
 
 class ServerFtp():
     def __init__(self):
@@ -43,9 +43,14 @@ class ServerFtp():
 
             self.server.max_cons = 10
             self.server.max_cons_per_ip = 5
-            # server.serve_forever()
+
+            # Iniciar o servidor em uma nova thread
+            self.server_thread = threading.Thread(target=self.server.serve_forever)
+            self.server_thread.daemon = True
+            self.server_thread.start()
+            # self.server.serve_forever()
             result_servidor = f"Servidor FTP iniciado: Ip: {ip}, Porta: {porta}, Usuário: {usuario}, Senha: {senha} "
-            return result_servidor
+            # return result_servidor
             
         except Exception as e:
             result_servidor = f"Erro ao iniciar servidor FTP: {e}"
@@ -55,9 +60,13 @@ class ServerFtp():
         try:
             if self.server is not None:
                 self.server.close_all()
+                self.server_thread.join()
             else:
                 result_servidor = "Nenhum servidor FTP em execução para parar."
             return result_servidor
         except Exception as e:
             result_servidor = f"Erro ao parar servidor FTP: {e}"
             return result_servidor
+        
+# a = ServerFtp()
+# a.start_server('192.168.1.1',2121,'admin','admin')
