@@ -4,7 +4,7 @@ from Controller import servidor
 
 
 def Main():
-    server =  servidor.ServerFtp()
+    server = servidor.ServerFtp()
     st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="collapsed", menu_items=None)
     st.text("SERVIDOR FTP")
     st.divider()
@@ -45,15 +45,20 @@ def Main():
             print(st.session_state.numip)
             if st.session_state.numip is not None and st.session_state.numip != "":
                 if result_porta != "" and txtuser != "" and txtsenha != "":
-                    server.start_server()
+                    print(f"Servidor FTP iniciado: Ip: {st.session_state.numip}, Porta: {result_porta}, Usuário: {txtuser}, Senha: {txtsenha} ")
+                    result_conexao_server = server.start_server(st.session_state.numip,result_porta,txtuser,txtsenha)
                     st.session_state.log = "Servidor Iniciado"
-
+                    time.sleep(1)
+                    st.session_state.log = result_conexao_server
                 else:
                     st.session_state.log = "Servidor não pode ser iniciado erro na porta, usuário ou senha"
             else:
                 st.session_state.log ="Servidor não iniciado favor verificar número de IP"
     with col_btn_pausar:
         btn_pausar = st.button("Pausar Servidor")
+        if btn_pausar:
+            result_stop_server = server.stop_server()
+            st.session_state.log = result_stop_server
     with col_espaco:
         pass
     st.divider()

@@ -9,6 +9,7 @@ import logging
 class ServerFtp():
     def __init__(self):
         self.ip = self.obter_ip()
+        self.server = None
 
     def obter_ip(self):
         try:
@@ -38,14 +39,25 @@ class ServerFtp():
             handler.authorizer = authorizer
 
             # Criar o servidor FTP
-            server = FTPServer((ip, porta), handler)  # Escuta na porta 2121
+            self.server = FTPServer((ip, porta), handler)  # Escuta na porta 2121
 
-            server.max_cons = 10
-            server.max_cons_per_ip = 5
-            server.serve_forever()
+            self.server.max_cons = 10
+            self.server.max_cons_per_ip = 5
+            # server.serve_forever()
             result_servidor = f"Servidor FTP iniciado: Ip: {ip}, Porta: {porta}, Usuário: {usuario}, Senha: {senha} "
             return result_servidor
             
         except Exception as e:
             result_servidor = f"Erro ao iniciar servidor FTP: {e}"
+            return result_servidor
+
+    def stop_server(self):
+        try:
+            if self.server is not None:
+                self.server.close_all()
+            else:
+                result_servidor = "Nenhum servidor FTP em execução para parar."
+            return result_servidor
+        except Exception as e:
+            result_servidor = f"Erro ao parar servidor FTP: {e}"
             return result_servidor
