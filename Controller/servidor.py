@@ -9,7 +9,6 @@ import threading
 class ServerFtp():
     def __init__(self):
         self.ip = self.obter_ip()
-        self.server = None
 
     def obter_ip(self):
         try:
@@ -40,6 +39,7 @@ class ServerFtp():
 
             # Criar o servidor FTP
             self.server = FTPServer((ip, porta), handler)  # Escuta na porta 2121
+            print(self.server)
 
             self.server.max_cons = 10
             self.server.max_cons_per_ip = 5
@@ -50,6 +50,7 @@ class ServerFtp():
             self.server_thread.start()
             # self.server.serve_forever()
             result_servidor = f"Servidor FTP iniciado: Ip: {ip}, Porta: {porta}, Usuário: {usuario}, Senha: {senha} "
+            print(self.server)
             # return result_servidor
             
         except Exception as e:
@@ -58,7 +59,8 @@ class ServerFtp():
 
     def stop_server(self):
         try:
-            if self.server is not None:
+            print(self.server)
+            if self.server is not None and self.server_thread.is_alive():
                 self.server.close_all()
                 self.server_thread.join()
             else:
@@ -68,5 +70,6 @@ class ServerFtp():
             result_servidor = f"Erro ao parar servidor FTP: {e}"
             return result_servidor
         
-# a = ServerFtp()
-# a.start_server('192.168.1.1',2121,'admin','admin')
+a = ServerFtp()
+a.start_server('192.168.1.1',2121,'admin','admin')
+a.stop_server()
